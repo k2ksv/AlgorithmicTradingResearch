@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quant Research & Backtest Platform</title>
+    <!-- Google Fonts - Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Plotly.js CDN -->
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-chart-line neon-text"></i>
+                <h2>QuantLab</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="#" class="menu-item active" data-page="home">
+                    <i class="fa-solid fa-house"></i> <span>Home</span>
+                </a>
+                <a href="#" class="menu-item" data-page="backtest">
+                    <i class="fa-solid fa-flask"></i> <span>Strategy Tester</span>
+                </a>
+                <a href="#" class="menu-item" data-page="comparison">
+                    <i class="fa-solid fa-scale-balanced"></i> <span>Comparison Mode</span>
+                </a>
+                <a href="#" class="menu-item" data-page="sessions">
+                    <i class="fa-solid fa-bookmark"></i> <span>Saved Sessions</span>
+                </a>
+                <a href="#" class="menu-item" data-page="about">
+                    <i class="fa-solid fa-circle-info"></i> <span>About</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Version 1.0.0</p>
+                <span>Portfolio Project</span>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="main-header">
+                <div class="header-title">
+                    <h1 id="page-title">Quantitative Research Platform</h1>
+                    <p id="page-subtitle">Historical analysis & parameter optimization engine</p>
+                </div>
+                <div class="connection-status">
+                    <span class="status-indicator online"></span>
+                    <span>Backend Server Connected</span>
+                </div>
+            </header>
+
+            <!-- Page Sections -->
+            <div class="content-body">
+                
+                <!-- 1. HOME PAGE -->
+                <section id="page-home" class="page-section active">
+                    <div class="hero-card">
+                        <div class="hero-text">
+                            <h2>Design, Test, and Optimize Trading Algorithms</h2>
+                            <p>An institutional-grade web interface for testing trend-following, mean-reversion, and momentum strategies across global asset classes. Backtest with transaction costs, analyze metrics, and discover optimal parameters dynamically.</p>
+                            <button class="btn btn-primary" onclick="switchPage('backtest')">
+                                <i class="fa-solid fa-rocket"></i> Launch Strategy Tester
+                            </button>
+                        </div>
+                        <div class="hero-icon">
+                            <i class="fa-solid fa-network-wired"></i>
+                        </div>
+                    </div>
+
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="fa-solid fa-globe feature-icon"></i>
+                            <h3>Global Asset Support</h3>
+                            <p>Backtest equities, indices, ETFs, Forex, and Crypto dynamically using yfinance.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fa-solid fa-sliders feature-icon"></i>
+                            <h3>7 Built-in Strategies</h3>
+                            <p>Buy & Hold, MA Crossover, 50-200 Trend, RSI, MACD, Bollinger Bands, and Volatility Filtering.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fa-solid fa-microchip feature-icon"></i>
+                            <h3>Parameter Optimization</h3>
+                            <p>Execute multi-dimensional grid search over hyperparameter values to find maximum Sharpe ratios.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fa-solid fa-file-pdf feature-icon"></i>
+                            <h3>Premium Exports</h3>
+                            <p>Download trade logs in CSV format or generate clean, publication-quality PDF summary reports.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. STRATEGY TESTER PAGE -->
+                <section id="page-backtest" class="page-section">
+                    <div class="control-results-layout">
+                        <!-- Left Control Panel -->
+                        <div class="control-panel glass-card">
+                            <h3 class="panel-section-title">Backtest Settings</h3>
+                            
+                            <!-- Ticker Input -->
+                            <div class="form-group">
+                                <label for="input-ticker">Stock Ticker(s) (comma-separated for portfolio)</label>
+                                <div class="input-with-icon">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="input-ticker" value="AAPL" placeholder="e.g. AAPL, MSFT, BTC-USD">
+                                </div>
+                            </div>
+
+                            <!-- Dates Selector -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="input-start-date">Start Date</label>
+                                    <input type="date" id="input-start-date" value="2018-01-01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-end-date">End Date</label>
+                                    <input type="date" id="input-end-date" value="2025-01-01">
+                                </div>
+                            </div>
+
+                            <!-- Interval & Strategy -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="input-interval">Interval</label>
+                                    <select id="input-interval">
+                                        <option value="1d">1 Day</option>
+                                        <option value="1wk">1 Week</option>
+                                        <option value="1mo">1 Month</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-strategy">Strategy</label>
+                                    <select id="input-strategy" onchange="renderStrategyParams()">
+                                        <option value="Buy & Hold">Buy & Hold</option>
+                                        <option value="MA Crossover" selected>MA Crossover</option>
+                                        <option value="50-200 Trend Following">50-200 Trend Following</option>
+                                        <option value="RSI Strategy">RSI Strategy</option>
+                                        <option value="MACD Strategy">MACD Strategy</option>
+                                        <option value="Bollinger Bands">Bollinger Bands</option>
+                                        <option value="Volatility Filter">Volatility Filter</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Strategy Parameters -->
+                            <div class="strategy-params-section">
+                                <h4 class="sub-section-title">Strategy Parameters</h4>
+                                <div id="strategy-params-inputs">
+                                    <!-- Inputs rendered dynamically by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Risk Settings -->
+                            <div class="strategy-params-section">
+                                <h4 class="sub-section-title">Risk & Trading Costs</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="input-cash">Initial Cash ($)</label>
+                                        <input type="number" id="input-cash" value="100000" step="5000">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-rf">Risk-Free Rate (%)</label>
+                                        <input type="number" id="input-rf" value="6.0" step="0.1">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="input-commission">Commission Fee (%)</label>
+                                        <input type="number" id="input-commission" value="0.1" step="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-slippage">Slippage (%)</label>
+                                        <input type="number" id="input-slippage" value="0.05" step="0.01">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Advanced Risk Management -->
+                            <div class="strategy-params-section">
+                                <h4 class="sub-section-title">Advanced Risk Management</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="input-trailing-stop">Trailing Stop-Loss (%)</label>
+                                        <input type="number" id="input-trailing-stop" value="0" min="0" max="50" step="0.5" placeholder="0 to disable">
+                                    </div>
+                                </div>
+                                <div class="form-group checkbox-item" style="margin-top: 10px; display: flex; align-items: center;">
+                                    <input type="checkbox" id="input-use-atr-sizing" onchange="toggleAtrInputs()">
+                                    <label for="input-use-atr-sizing" style="margin-bottom: 0; margin-left: 8px;">Enable ATR Position Sizing</label>
+                                </div>
+                                <div id="atr-sizing-params" class="hide" style="margin-top: 10px;">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="input-risk-pct">Risk % Per Trade</label>
+                                            <input type="number" id="input-risk-pct" value="2.0" step="0.1">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="input-atr-mult">ATR Multiplier</label>
+                                            <input type="number" id="input-atr-mult" value="2.0" step="0.1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-block" onclick="runBacktest()">
+                                    <i class="fa-solid fa-play"></i> Run Backtest
+                                </button>
+                                <button class="btn btn-secondary btn-block" onclick="runOptimization()">
+                                    <i class="fa-solid fa-sliders"></i> Optimize Strategy
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Results Panel -->
+                        <div class="results-panel">
+                            <!-- Loader -->
+                            <div id="backtest-loader" class="loader-container hide">
+                                <div class="spinner"></div>
+                                <p>Running Quant Strategy Simulation...</p>
+                            </div>
+
+                            <!-- Metrics and Charts Display -->
+                            <div id="backtest-results" class="hide">
+                                <!-- Quick Stats Cards Grid -->
+                                <div class="stats-grid">
+                                    <div class="stat-card">
+                                        <span>Strategy Total Return</span>
+                                        <h3 id="stat-strat-return" class="green-text">0.0%</h3>
+                                        <small id="stat-bh-return">Buy & Hold: 0.0%</small>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span>Annualized CAGR</span>
+                                        <h3 id="stat-strat-cagr">0.0%</h3>
+                                        <small id="stat-bh-cagr">Buy & Hold: 0.0%</small>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span>Max Drawdown</span>
+                                        <h3 id="stat-strat-dd" class="red-text">0.0%</h3>
+                                        <small id="stat-bh-dd">Buy & Hold: 0.0%</small>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span>Sharpe Ratio</span>
+                                        <h3 id="stat-strat-sharpe">0.00</h3>
+                                        <small id="stat-bh-sharpe">Buy & Hold: 0.00</small>
+                                    </div>
+                                </div>
+
+                                <!-- Plotly Tab Controller -->
+                                <div class="chart-tab-container glass-card">
+                                    <div class="tab-headers">
+                                        <button class="tab-header active" onclick="switchChartTab('price')">Price & Trades</button>
+                                        <button class="tab-header" onclick="switchChartTab('equity')">Equity Curve</button>
+                                        <button class="tab-header" onclick="switchChartTab('drawdown')">Drawdown Profile</button>
+                                        <button class="tab-header" onclick="switchChartTab('heatmap')">Monthly Heatmap</button>
+                                        <button class="tab-header" onclick="switchChartTab('monte_carlo')">Monte Carlo Simulation</button>
+                                    </div>
+                                    <div class="tab-contents">
+                                        <div id="chart-price" class="chart-window active"></div>
+                                        <div id="chart-equity" class="chart-window"></div>
+                                        <div id="chart-drawdown" class="chart-window"></div>
+                                        <div id="chart-heatmap" class="chart-window"></div>
+                                        <div id="chart-monte_carlo" class="chart-window">
+                                            <div id="plotly-mc-chart" style="height: 380px; width: 100%;"></div>
+                                            <div class="mc-stats-panel" style="margin-top: 15px; border-top: 1px solid #333; padding-top: 15px;">
+                                                <h4 class="sub-section-title" style="margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa;">Monte Carlo Stress Test (1,000 Bootstrapped Paths)</h4>
+                                                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 10px;">
+                                                    <div class="stat-card" style="padding: 10px 15px; background: rgba(255,255,255,0.02); border: 1px solid #333;">
+                                                        <span style="font-size: 11px; color: #888;">Probability of Loss</span>
+                                                        <h3 id="stat-mc-prob-loss" class="red-text" style="font-size: 20px; margin-top: 4px;">0.0%</h3>
+                                                    </div>
+                                                    <div class="stat-card" style="padding: 10px 15px; background: rgba(255,255,255,0.02); border: 1px solid #333;">
+                                                        <span style="font-size: 11px; color: #888;">95% Value-at-Risk (VaR)</span>
+                                                        <h3 id="stat-mc-var" class="red-text" style="font-size: 20px; margin-top: 4px;">0.0%</h3>
+                                                    </div>
+                                                    <div class="stat-card" style="padding: 10px 15px; background: rgba(255,255,255,0.02); border: 1px solid #333;">
+                                                        <span style="font-size: 11px; color: #888;">95% Expected Shortfall (CVaR)</span>
+                                                        <h3 id="stat-mc-cvar" class="red-text" style="font-size: 20px; margin-top: 4px;">0.0%</h3>
+                                                    </div>
+                                                    <div class="stat-card" style="padding: 10px 15px; background: rgba(255,255,255,0.02); border: 1px solid #333;">
+                                                        <span style="font-size: 11px; color: #888;">Median Terminal Value</span>
+                                                        <h3 id="stat-mc-median" style="font-size: 20px; margin-top: 4px; color: #00e676;">$100,000</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action bar for Downloads -->
+                                <div class="downloads-bar">
+                                    <button class="btn btn-secondary" onclick="exportCSV()">
+                                        <i class="fa-solid fa-file-csv"></i> Export CSV Log
+                                    </button>
+                                    <button class="btn class-btn btn-secondary" onclick="exportPDF()">
+                                        <i class="fa-solid fa-file-pdf"></i> Download PDF Report
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="saveCurrentSession()">
+                                        <i class="fa-solid fa-floppy-disk"></i> Save Session
+                                    </button>
+                                </div>
+
+                                <!-- Trade Log Table Section -->
+                                <div class="table-container glass-card">
+                                    <h4 class="table-title">Executed Trades Log</h4>
+                                    <div class="table-wrapper">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Action</th>
+                                                    <th>Price</th>
+                                                    <th>Shares</th>
+                                                    <th>Trade Value</th>
+                                                    <th>Costs</th>
+                                                    <th>Cash Bal.</th>
+                                                    <th>Exposure</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="trade-log-body">
+                                                <!-- Dynamic Trades Renders -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Optimization Heatmap & Results Display -->
+                            <div id="optimization-results" class="hide">
+                                <div class="glass-card">
+                                    <h3 class="panel-section-title">Parameter Optimization Results</h3>
+                                    <div class="stats-grid">
+                                        <div class="stat-card">
+                                            <span>Best Parameters</span>
+                                            <h3 id="stat-opt-best-params" class="neon-text">-</h3>
+                                        </div>
+                                        <div class="stat-card">
+                                            <span>Best Metric Value</span>
+                                            <h3 id="stat-opt-best-val">0.00</h3>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="chart-opt-heatmap" class="chart-window heatmap-window"></div>
+                                    
+                                    <div class="table-container">
+                                        <h4 class="table-title">All Optimization Results</h4>
+                                        <div class="table-wrapper">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parameter Combination</th>
+                                                        <th>Sharpe Ratio</th>
+                                                        <th>CAGR (%)</th>
+                                                        <th>Max DD (%)</th>
+                                                        <th>Profit Factor</th>
+                                                        <th>Total Trades</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="opt-results-body">
+                                                    <!-- Dynamic Results -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. STRATEGY COMPARISON PAGE -->
+                <section id="page-comparison" class="page-section">
+                    <div class="control-results-layout">
+                        <!-- Left Panel strategy checkboxes -->
+                        <div class="control-panel glass-card">
+                            <h3 class="panel-section-title">Comparison Settings</h3>
+                            <div class="form-group">
+                                <label for="compare-ticker">Stock Ticker(s) (comma-separated)</label>
+                                <input type="text" id="compare-ticker" value="AAPL">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="compare-start">Start Date</label>
+                                    <input type="date" id="compare-start" value="2020-01-01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="compare-end">End Date</label>
+                                    <input type="date" id="compare-end" value="2025-01-01">
+                                </div>
+                            </div>
+                            
+                            <h4 class="sub-section-title" style="margin-top: 15px;">Select Strategies to Compare</h4>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="compare-cfg-bh" checked disabled> 
+                                    <span>Buy & Hold (Baseline)</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="compare-cfg-ma" checked> 
+                                    <span>MA Crossover</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="compare-cfg-trend" checked> 
+                                    <span>50-200 Trend following</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="compare-cfg-rsi"> 
+                                    <span>RSI Strategy</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="compare-cfg-macd"> 
+                                    <span>MACD Strategy</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="compare-cfg-bb"> 
+                                    <span>Bollinger Bands</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="compare-cfg-vol"> 
+                                    <span>Volatility Filter</span>
+                                </label>
+                            </div>
+
+                            <button class="btn btn-primary btn-block" style="margin-top: 20px;" onclick="runComparison()">
+                                <i class="fa-solid fa-scale-balanced"></i> Compare Strategies
+                            </button>
+                        </div>
+
+                        <!-- Right Comparison Results -->
+                        <div class="results-panel">
+                            <div id="compare-loader" class="loader-container hide">
+                                <div class="spinner"></div>
+                                <p>Running Multi-Strategy Simulation...</p>
+                            </div>
+                            
+                            <div id="compare-results" class="hide">
+                                <div id="chart-compare-equity" class="chart-window glass-card" style="height: 400px; margin-bottom: 20px;"></div>
+                                
+                                <div class="table-container glass-card">
+                                    <h4 class="table-title">Performance Comparison Summary</h4>
+                                    <div class="table-wrapper">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Strategy Name</th>
+                                                    <th>Total Return (%)</th>
+                                                    <th>CAGR (%)</th>
+                                                    <th>Volatility (%)</th>
+                                                    <th>Sharpe Ratio</th>
+                                                    <th>Sortino Ratio</th>
+                                                    <th>Max Drawdown (%)</th>
+                                                    <th>Trades</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="compare-table-body">
+                                                <!-- Dynamic Comparative Data -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. SAVED SESSIONS PAGE -->
+                <section id="page-sessions" class="page-section">
+                    <div class="glass-card" style="min-height: 400px;">
+                        <h3 class="panel-section-title">Saved Quantitative Research Sessions</h3>
+                        <p>Access your locally stored historical research backtests and comparison results below.</p>
+                        
+                        <div id="no-sessions-msg" class="empty-state">
+                            <i class="fa-solid fa-folder-open"></i>
+                            <p>No saved research sessions found. Run a backtest and click "Save Session" to store it here.</p>
+                        </div>
+                        
+                        <div id="sessions-list" class="sessions-list-grid">
+                            <!-- Sessions rendered dynamically by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. ABOUT PAGE -->
+                <section id="page-about" class="page-section">
+                    <div class="about-container glass-card">
+                        <h2>QuantLab Trading Research Engine</h2>
+                        <p>QuantLab is a modular algorithmic testing framework designed to analyze technical indicator indicators when applied as overlay systems on standard asset classes.</p>
+                        
+                        <h3>Technical Highlights:</h3>
+                        <ul>
+                            <li><strong>FastAPI & Python Engine</strong>: Asynchronous python web framework serving high-speed numeric computations with Pandas and NumPy.</li>
+                            <li><strong>Vectorized Operations</strong>: Strategy indicators and transaction logging leverage vectorized array manipulations, completing years of backtests in milliseconds.</li>
+                            <li><strong>No Look-Ahead Bias</strong>: Position signal lag rules are strictly validated to simulate realistic next-day execution structures.</li>
+                            <li><strong>Interactive Plotly Graphics</strong>: Charts rendered dynamically in client browser with zoom, pan, and hover support.</li>
+                        </ul>
+                        
+                        <h3>Disclaimer</h3>
+                        <p>This software is for research and educational purposes only. It does not constitute financial advice. Past performance is no guarantee of future results.</p>
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+    
+    <!-- Custom Application Logic -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
